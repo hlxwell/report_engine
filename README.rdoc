@@ -1,0 +1,64 @@
+= Model-chart-fu
+
+This project rocks and uses MIT-LICENSE.Introduction
+============
+
+Model-chart-fu provides you some DSLs to generate all kinds of charts by merely some simple and easy step of configuration in your db model.
+
+1. You will get a list of all chart page.
+2. You can embed any one of chart to any other places.
+3. You also can get a table version of chart data.
+
+* transform from one type of chart to another but the data is the same.
+
+All the chart data will be well cached, so the performance will be fast.
+
+Usage
+=====
+
+  ### columns
+  # username
+  # locale
+  # firstname
+  # lastname
+  # gender
+  # last_sign_in_at
+  #
+  class User < AR
+    ### two kinds of data need to be displayed:
+    # display the ratio between several data based on total records of table.
+    # display historical data, by day, week, month, year.
+
+    pie_chart :title => "Gender Ratio", :desc => "Male vs Female" do
+      
+    end
+
+    bar_chart :title => "Locale Distribution", :desc => "User count for each locale" do
+
+    end
+
+    chart_set :title => "Locale Distribution", :types => [:pie, :bar] do
+
+    end
+
+    line_chart :title => "New Users", :desc => "New registered users" do
+
+    end
+
+    table_chart :title => "Latest logged in users" do
+      columns [:username, :locale, :firstname, :lastname]
+    end
+  end
+
+  Use rails g model_chart_fu:config to generate a config file at config/initializers/model_chart_fu_config.rb
+  You can config:
+  * mount_at
+  * auth_method
+  * cache
+  * update_frequency
+  *
+
+
+
+  Then when you put /
+
