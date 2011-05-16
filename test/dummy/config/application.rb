@@ -5,9 +5,10 @@ require "active_record/railtie"
 require "action_controller/railtie"
 require "action_view/railtie"
 require "action_mailer/railtie"
+require 'pp'
 
 Bundler.require
-require "model_chart_fu"
+require "report_engine"
 
 module Dummy
   class Application < Rails::Application
@@ -41,5 +42,12 @@ module Dummy
 
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:password]
+
+    config.generators do |g|
+      g.orm             :active_record
+      g.template_engine :erb
+      g.test_framework  :test_unit
+      g.fixture_framework :factory_girl
+    end
   end
 end
