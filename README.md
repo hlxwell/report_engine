@@ -41,13 +41,13 @@ Usage
 							:columns => {
 								:male => {
 									:common_options => {:gender => 'M'},
-									:bought =>
-									:never_bought =>
+									:bought => lambda {|criteria| Book.select("distinct user_id").where(:gender => 'M').count }
+									:never_bought => lambda {|criteria| User.where(:gender => 'M').includes(:books).where("books.id IS NULL").count }
 								},
 								:female => {
 									:common_options => {:gender => 'W'},
-									:bought =>
-									:never_bought =>
+									:bought => lambda {|criteria| }
+									:never_bought => lambda {|criteria| }
 								}
 							}
 

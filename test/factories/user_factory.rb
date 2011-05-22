@@ -1,6 +1,6 @@
 Factory.define :user do |u|
   u.sequence(:username) { |n| "username#{n}" }
-  u.gender "M"
-  u.country_code "zh"
-  u.birthday Date.today - 25.years
+  u.gender %w{W M}[rand(2)]
+  u.country_code %w{zh en ja}[rand(3)]
+  u.birthday Date.today - rand(30).years
 end
