@@ -2,23 +2,24 @@ class User < ActiveRecord::Base
   scope :male, where(:gender => 'M')
   scope :female, where(:gender => 'W')
 
-	chart :title => "Buying behavior of different gender",
-	      :type => :pie,
-				:columns => {
-					:male_bought => lambda {},
-					:male_never_bought => lambda {},
-					:female_bought => lambda {},
-					:female_never_bought => lambda {}
-				}
+  # chart :title => "Buying behavior of different gender",
+  #       :type => :pie,
+  #       :columns => {
+  #         :male_bought => lambda {},
+  #         :male_never_bought => lambda {},
+  #         :female_bought => lambda {},
+  #         :female_never_bought => lambda {}
+  #       }
 
   chart :title => "Buying behavior of different age",
-        :type => :line,
+        :type => :column,
   			:x_columns => {
-  				:between_10_20 => {:birthday => (Date.today - 20)..(Date.today - 10)},
-  				:between_20_30 => {:birthday => (Date.today - 30)..(Date.today - 20)}
+  				"Age between 10 and 20" => {:birthday => 20.years.ago.to_date..10.years.ago.to_date},
+  				"Age between 20 and 30" => {:birthday => 30.years.ago.to_date..20.years.ago.to_date}
   			},
   			:y_columns => {
-  				:male => lambda {|x_column| User.male.where(x_column).count },
-  				:female => lambda {|x_column| User.female.where(x_column).count }
-  			}
+  				"Male" => lambda {|x_column| User.male.where(x_column).count },
+  				"Female" => lambda {|x_column| User.female.where(x_column).count }
+  			},
+  			:y_title => "User count"
 end

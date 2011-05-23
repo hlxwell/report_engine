@@ -1,1 +1,5 @@
-hello
+<%= javascript_include_tag 'highcharts' %>
+
+<% @datas.each_with_index do |data, index| %>
+	<%= high_chart("test_#{index}", data) %>
+<% end %>
