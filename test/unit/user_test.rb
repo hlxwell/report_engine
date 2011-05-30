@@ -13,8 +13,20 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "pie_chart" do
+    pp User.charts_data
     pp User.charts
   end
+
+  # test "has many books" do
+  #   buying = Factory(:buying)
+  #   user = buying.user
+  #   book = buying.book
+  # 
+  #   p User.user_count 'M', false
+  #   p User.user_count 'W', false
+  #   p User.user_count 'M', true
+  #   p User.user_count 'W', true
+  # end
 
   private
 
