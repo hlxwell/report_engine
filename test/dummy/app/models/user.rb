@@ -5,17 +5,6 @@ class User < ActiveRecord::Base
   scope :male, where(:gender => 'M')
   scope :female, where(:gender => 'W')
 
-  pie_chart "xxx", :y_axis_title => "cool" do
-    group("youth").value(["xxx", xxx])
-    group("older").value(["yyy", yyy])
-    column("male").color('red') do
-      User.user_count('W', true)
-    end
-    column("female").color('red') do
-      User.user_count('M', true)
-    end
-  end
-
   # type can be: line, spline, area, areaspline, column, bar, pie and scatter
   #
   pie_chart "Buying behavior of different gender",

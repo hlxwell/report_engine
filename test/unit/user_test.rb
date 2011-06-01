@@ -13,8 +13,8 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "pie_chart" do
-    pp User.charts_data
-    pp User.charts
+    # pp User.charts_data
+    # pp User.charts
   end
 
   # test "has many books" do

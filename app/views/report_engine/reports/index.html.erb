@@ -1,9 +1,10 @@
-<%= javascript_include_tag 'highcharts', "themes/dark-blue" %>
+<!-- "themes/dark-blue" -->
+<%= javascript_include_tag 'highcharts' %>
 
 <% User.charts.each_with_index do |data, index| %>
 	<div style="width: 49%; float: left; margin: 5px 5px 0 0">
 		<%= high_chart("chart_#{index}", data) do %>
-			<% raw "options.tooltip.formatter = function() {return this.point.name + ':' + this.y + ' people';}" if data.options[:chart][:defaultSeriesType] == :pie %>
+			<% raw "options.tooltip.formatter = function() {return this.point.name + ':' + this.y + ' people';}" if data.options[:chart][:defaultSeriesType].to_s == "pie" %>
 		<% end %>
 	</div>
 <% end %>

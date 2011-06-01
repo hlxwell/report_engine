@@ -21,11 +21,12 @@ module ReportEngine
               :pie => {
                 :allowPointSelect => true,
                 :cursor => 'pointer',
-                :dataLabels => {
-                  :color => '#ffffff'
-                },
+                :dataLabels => {},
                 :showInLegend => true
               }
+            },
+            :tooltip => {
+              :formatter => "function() {return this.point.name + ':' + this.y + ' people';}"
             }
           }
 
@@ -41,12 +42,11 @@ module ReportEngine
             f.plotOptions default_configs[:plot_options]
             f.xAxis default_configs[:x_axis]
             f.yAxis default_configs[:y_axis]
-            f.series extract_data_for_series(v['data'])
-            # f.series [
-            #   {:name => 'male', :data => [12, 34]},
-            #   {:name => 'female', :data => [3, 9]}
-            # ]
-            # :name => "total", :data=> v['data'].to_a
+
+            # f.series :name => "total", :data=> [1,2,3,4]
+            extract_data_for_series(v['data'], v['config']['type']).each do |data|
+              f.series data
+            end
           end
         end
 
@@ -64,27 +64,42 @@ module ReportEngine
     #     female
     #   }
     # }
-    def extract_data_for_series data
-      # # groups => ["10-20", "20-30"]
-      # categories = data.keys
-      # 
-      # # :name => 'male', :data => [1, 2]
-      # # :name => 'female', :data => [4, 5]
-      # series = []
-      # data.values.each do |hash|
-      #   # {'male' => 1, 'female' => 2}
-      #   # {'male' => 3, 'female' => 4}
-      #   hash.each do |k, v|
-      #     if i = series.index {|s| s[:name] == k}
-      #       series[i][:data] << v
-      #     else
-      #       series << { :name => k, :data => [v] }
-      #     end
-      #   end
-      # end
-      data.each do |k, v|
-        v.keys
+    def extract_data_for_series data, chart_type
+      # groups => ["10-20", "20-30"]
+      categories = data.keys
+
+      ### final result should be:
+      # :name => 'male', :data => [1, 2]
+      # :name => 'female', :data => [4, 5]
+      series = []
+
+      ## for line, column chart
+      # data.values => [{'male' => 1, 'female' => 2}, {'male' => 3, 'female' => 4}]
+      ## for pie chart
+      # data.values => [1,2,3,4]
+      #
+      if data.values.first.is_a? Hash
+        data.values.each do |hash|
+          hash.each do |k, v|
+            # if {:name => "xxx"} exist?
+            if i = series.index {|s| s[:name] == k}
+              series[i][:data] << v
+            else
+              series << { :name => k, :data => [v] }
+            end
+          end
+        end
+      else
+        if chart_type.to_s == 'pie'
+          series << {:name => "total", :data => data.to_a}
+        else
+          data.each do |k, v|
+            series << {:name => k, :data => v}
+          end
+        end
       end
+
+      series
     end
 
     def charts_data
@@ -94,6 +109,7 @@ module ReportEngine
 
         # traverse all chart data configs, and calculate the criteria to result.
         #
+        @@chart_options ||= []
         @@chart_options.each do |chart|
           chart_title = chart[:title]
 
@@ -105,8 +121,9 @@ module ReportEngine
           # {'data' => ...}
           if chart[:groups]
             chart[:groups].each do |group_name, group_value|
-              _data[chart_title]['config']['categories'] ||= []
+              _data[chart_title]['config']['categories'] = [] if _data[chart_title]['config']['categories'].blank?
               _data[chart_title]['config']['categories'] << group_name
+
               chart[:columns].each do |column_name, column_block|
                 _data[chart_title]['data'][group_name][column_name] = column_block.call(group_value)
               end
