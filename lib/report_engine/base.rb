@@ -26,7 +26,7 @@ module ReportEngine
               }
             },
             :tooltip => {
-              :formatter => "function() {return this.point.name + ':' + this.y + ' people';}"
+              :formatter => v['config']['tooltip_formatter']
             }
           }
 
@@ -42,7 +42,7 @@ module ReportEngine
             f.plotOptions default_configs[:plot_options]
             f.xAxis default_configs[:x_axis]
             f.yAxis default_configs[:y_axis]
-
+            f.tooltip default_configs[:tooltip]
             # f.series :name => "total", :data=> [1,2,3,4]
             extract_data_for_series(v['data'], v['config']['type']).each do |data|
               f.series data
@@ -114,7 +114,7 @@ module ReportEngine
           chart_title = chart[:title]
 
           # {'config' => ...}
-          %w{type column_title}.each do |col|
+          %w{type column_title tooltip_formatter}.each do |col|
             _data[chart_title]['config'][col] = chart[col]
           end
 
@@ -133,8 +133,8 @@ module ReportEngine
               _data[chart_title]['data'][key] = value.call
             end
           end
-
         end
+
         _data
       # end
     end
@@ -142,12 +142,14 @@ module ReportEngine
     protected
 
     def parse_options title, type, options
+      # a list of acceptable parameters.
       chart_option = {
-        :title          => title,                        # chart title
-        :type           => type,                         # chart type
-        :groups         => options.delete(:groups),      # groups
-        :columns        => options.delete(:columns),     # columns criteria
-        :column_title   => options.delete(:column_title) # y column title
+        :title              => title,                           # chart title
+        :type               => type,                            # chart type
+        :groups             => options.delete(:groups),         # groups
+        :columns            => options.delete(:columns),        # columns criteria
+        :column_title       => options.delete(:column_title),   # y column title
+        :tooltip_formatter  => options.delete(:tooltip_formatter)
       }.with_indifferent_access
 
       @@chart_options ||= []

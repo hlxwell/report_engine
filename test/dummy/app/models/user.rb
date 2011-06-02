@@ -8,6 +8,7 @@ class User < ActiveRecord::Base
   # type can be: line, spline, area, areaspline, column, bar, pie and scatter
   #
   pie_chart "Buying behavior of different gender",
+            :tooltip_formatter => "function() {return this.point.name + ':' + this.y + ' people';}",
             :columns => {
               "male bought" => lambda { User.user_count('M', true) },
               "male never bought" => lambda { User.user_count('M', false) },

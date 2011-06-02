@@ -1,6 +1,7 @@
 module ReportEngine
   class Engine < Rails::Engine
     initializer "report_engine" do
+      require 'lazy_high_charts_patch/layout_helper'
       ActiveRecord::Base.send(:extend, ReportEngine::Base)
     end
 
